@@ -28,8 +28,6 @@ function gameLoop() {
 
 gameLoop();
 
-// Additional JavaScript for more features
-
 const scoreElement = document.getElementById('score');
 const livesElement = document.getElementById('lives');
 let score = 0;
