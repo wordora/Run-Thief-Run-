@@ -1,65 +1,95 @@
-const thief = document.getElementById('thief');
-const police = document.getElementById('police');
-const scoreElement = document.getElementById('score');
-let score = 0;
+const player = document.getElementById('player');
+const platforms = document.querySelectorAll('.platform');
+const enemies = document.querySelectorAll('.enemy');
+
+let velocityX = 0;
+let velocityY = 0;
 let isJumping = false;
+let playerBottom = 100;
+let playerLeft = 50;
 
-// Jump function
-function jump() {
-  if (isJumping) return;
-  isJumping = true;
-  let jumpHeight = 0;
-  const upInterval = setInterval(() => {
-    if (jumpHeight >= 150) {
-      clearInterval(upInterval);
-      const downInterval = setInterval(() => {
-        if (jumpHeight <= 0) {
-          clearInterval(downInterval);
-          isJumping = false;
-        }
-        jumpHeight -= 10;
-        thief.style.bottom = 100 + jumpHeight + 'px';
-      }, 20);
-    }
-    jumpHeight += 10;
-    thief.style.bottom = 100 + jumpHeight + 'px';
-  }, 20);
-}
+const gravity = 0.8;
+const jumpForce = -15;
+const moveSpeed = 5;
 
-// Detect collision
-function checkCollision() {
-  const thiefRect = thief.getBoundingClientRect();
-  const policeRect = police.getBoundingClientRect();
-
-  if (
-    thiefRect.left < policeRect.right &&
-    thiefRect.right > policeRect.left &&
-    thiefRect.bottom > policeRect.top
-  ) {
-    alert('Game Over! Your score: ' + score);
-    score = 0;
-    scoreElement.textContent = 'Score: ' + score;
-    police.style.animation = 'none';
-    police.offsetHeight; // Trigger reflow
-    police.style.animation = null;
-  }
-}
-
-// Update score
-function updateScore() {
-  score++;
-  scoreElement.textContent = 'Score: ' + score;
-}
-
-// Event listener for jumping
-document.addEventListener('keydown', (event) => {
-  if (event.code === 'Space') {
-    jump();
+// Player movement
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') velocityX = -moveSpeed;
+  if (e.key === 'ArrowRight') velocityX = moveSpeed;
+  if (e.key === 'ArrowUp' && !isJumping) {
+    velocityY = jumpForce;
+    isJumping = true;
   }
 });
 
+document.addEventListener('keyup', (e) => {
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') velocityX = 0;
+});
+
 // Game loop
-setInterval(() => {
-  checkCollision();
-  updateScore();
-}, 100);
+function update() {
+  // Apply gravity
+  velocityY += gravity;
+  playerBottom += velocityY;
+  playerLeft += velocityX;
+
+  // Keep player in bounds
+  if (playerLeft < 0) playerLeft = 0;
+  if (playerLeft > window.innerWidth - 40) playerLeft = window.innerWidth - 40;
+
+  // Platform collision
+  let onPlatform = false;
+  platforms.forEach(platform => {
+    const platRect = platform.getBoundingClientRect();
+    if (
+      playerBottom <= platRect.top &&
+      playerBottom + velocityY >= platRect.top &&
+      playerLeft + 40 >= platRect.left &&
+      playerLeft <= platRect.right
+    ) {
+      velocityY = 0;
+      playerBottom = platRect.top;
+      isJumping = false;
+      onPlatform = true;
+    }
+  });
+
+  // Ground collision
+  if (playerBottom <= 50) {
+    playerBottom = 50;
+    velocityY = 0;
+    isJumping = false;
+    onPlatform = true;
+  }
+
+  // Enemy collision
+  enemies.forEach(enemy => {
+    const enemyRect = enemy.getBoundingClientRect();
+    if (
+      playerLeft < enemyRect.right &&
+      playerLeft + 40 > enemyRect.left &&
+      playerBottom < enemyRect.bottom &&
+      playerBottom + 40 > enemyRect.top
+    ) {
+      alert('Game Over!');
+      resetGame();
+    }
+  });
+
+  // Update player position
+  player.style.bottom = playerBottom + 'px';
+  player.style.left = playerLeft + 'px';
+
+  requestAnimationFrame(update);
+}
+
+function resetGame() {
+  playerBottom = 100;
+  playerLeft = 50;
+  velocityX = 0;
+  velocityY = 0;
+  isJumping = false;
+}
+
+// Start the game
+update();
