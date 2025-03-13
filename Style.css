@@ -1,50 +1,109 @@
-* {
+body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-}
-
-body {
   overflow: hidden;
+  background-color: #87CEEB;
 }
 
 .game-container {
   position: relative;
   width: 100vw;
   height: 100vh;
-  background: #87CEEB;
 }
 
 #player {
   position: absolute;
-  width: 40px;
-  height: 40px;
-  background: #FF0000; /* Mario-like red */
-  bottom: 100px;
-  left: 50px;
-  border-radius: 10%;
+  width: 50px;
+  height: 50px;
+  background-color: red;
+  bottom: 0;
+  left: 100px;
 }
 
 .platform {
   position: absolute;
   width: 100px;
   height: 20px;
-  background: #4CAF50; /* Green platforms */
-  border-radius: 10px;
+  background-color: #8B4513;
 }
 
 .enemy {
   position: absolute;
-  width: 40px;
-  height: 40px;
-  background: #0000FF; /* Goomba-like enemy */
-  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background-color: green;
 }
 
 #ground {
   position: absolute;
-  bottom: 0;
   width: 100%;
-  height: 50px;
-  background: #8B4513; /* Brown ground */
+  height: 20px;
+  background-color: #8B4513;
+  bottom: 0;
+}
+
+/* Additional styling for more elements */
+.platform.large {
+  width: 150px;
+  height: 25px;
+  background-color: #A0522D;
+}
+
+.enemy.boss {
+  width: 70px;
+  height: 70px;
+  background-color: #FF0000;
+}
+
+#score {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 24px;
+  color: white;
+}
+
+#lives {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  color: white;
+}
+
+.power-up {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background-color: yellow;
+  border-radius: 50%;
+}
+
+.projectile {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: blue;
+}
+
+/* Keyframe animations */
+@keyframes jump {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-150px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes moveLeft {
+  from { left: 100px; }
+  to { left: 0; }
+}
+
+@keyframes moveRight {
+  from { left: 0; }
+  to { left: 100px; }
+}
+
+@keyframes shoot {
+  from { left: 0; }
+  to { left: 100%; }
 }
