@@ -42,7 +42,6 @@ body {
   bottom: 0;
 }
 
-/* Additional styling for more elements */
 .platform.large {
   width: 150px;
   height: 25px;
@@ -86,7 +85,6 @@ body {
   background-color: blue;
 }
 
-/* Keyframe animations */
 @keyframes jump {
   0% { transform: translateY(0); }
   50% { transform: translateY(-150px); }
